@@ -13,24 +13,39 @@ const SignupPage = () => {
 
   const navigate = useNavigate();
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const newUser = {
       name,
       email,
       password,
-      phone,
+      phone_number: phone,
       gender,
-      dob,
-      membership,
+      date_of_birth: dob,
+      membership_status: membership,
     };
 
-    console.log("Signup data:", newUser);
-    toast.success("Account created successfully!");
+    try {
+      const res = await fetch("/api/users/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
 
-    // redirect (placeholder, adjust as needed)
-    return navigate("/login");
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Signup failed");
+
+      // Save JWT to localStorage
+      localStorage.setItem("token", data.token);
+
+      toast.success("Account created successfully!");
+      navigate("/login"); // Redirect after signup
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   return (

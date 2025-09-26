@@ -8,15 +8,29 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
-    const loginData = { email, password };
-    console.log("Login data:", loginData);
-    toast.success("Logged in successfully!");
+    try {
+      const res = await fetch("/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // redirect (placeholder, adjust as needed)
-    return navigate("/");
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Login failed");
+
+      // Save JWT token
+      localStorage.setItem("token", data.token);
+
+      toast.success("Logged in successfully!");
+      navigate("/jobs"); // redirect to jobs page
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   return (
