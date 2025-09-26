@@ -44,6 +44,7 @@ const createJob = async (req, res) => {
     try {
         const newjob = await Job.create({
             title,
+            type,
             description,
             location,
             salary,
@@ -56,6 +57,7 @@ const createJob = async (req, res) => {
         });
         res.status(201).json(newjob);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Error creating job' });
     }
 }
@@ -82,7 +84,7 @@ const updateJob = async (req, res) => {
 };
 
 // Delete a job by ID
-const deleteJobById = async (req, res) => {
+const deleteJob = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -107,5 +109,5 @@ module.exports = {
     createJob,
     getJobById,
     updateJob,
-    deleteJobById
+    deleteJob
 }; 
