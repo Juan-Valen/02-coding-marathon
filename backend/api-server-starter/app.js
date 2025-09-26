@@ -21,6 +21,9 @@ app.use("/api/users", userRouter);
 // Use the jobRouter for all /jobs routes
 app.use("/api/jobs", jobRouter);
 
+// Use the jobRouter for all /jobs routes
+app.use("/api/jobs", jobRouter);
+
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
