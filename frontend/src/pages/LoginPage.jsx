@@ -1,36 +1,16 @@
+// pages/LoginPage.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useLogin } from "../hooks/useLogin";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
+  const { login } = useLogin();
 
-  const submitForm = async (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
-
-    try {
-      const res = await fetch("/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Login failed");
-
-      // Save JWT token
-      localStorage.setItem("token", data.token);
-
-      toast.success("Logged in successfully!");
-      navigate("/jobs"); // redirect to jobs page
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message);
-    }
+    login({ email, password });
   };
 
   return (

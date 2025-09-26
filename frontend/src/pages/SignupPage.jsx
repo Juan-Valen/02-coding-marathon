@@ -1,6 +1,6 @@
+// pages/SignupPage.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useSignup } from "../hooks/useSignup";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -11,9 +11,9 @@ const SignupPage = () => {
   const [dob, setDob] = useState("");
   const [membership, setMembership] = useState("Basic");
 
-  const navigate = useNavigate();
+  const { signup } = useSignup();
 
-  const submitForm = async (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
 
     const newUser = {
@@ -26,26 +26,7 @@ const SignupPage = () => {
       membership_status: membership,
     };
 
-    try {
-      const res = await fetch("/api/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Signup failed");
-
-      // Save JWT to localStorage
-      localStorage.setItem("token", data.token);
-
-      toast.success("Account created successfully!");
-      navigate("/login"); // Redirect after signup
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message);
-    }
+    signup(newUser);
   };
 
   return (
