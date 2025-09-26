@@ -6,7 +6,7 @@ const { getJobs,
     updateJob,
     deleteJob
 } = require('../controllers/jobControllers');
-const requireAuth = require('../middleware/requireAuth'); 
+const requireAuth = require('../middleware/requireAuth');
 
 // Get all jobs (public)
 router.get('/', getJobs);
@@ -14,13 +14,16 @@ router.get('/', getJobs);
 // Get a job by ID (public)
 router.get('/:id', getJobById);
 
+if (process.env.PROTECTED == "true") {
+    router.use(requireAuth)
+}
 // Create a new job (protected)
-router.post('/', requireAuth, createJob);
+router.post('/', createJob);
 
 // Update a job by ID (protected)
-router.put('/:id', requireAuth, updateJob);
+router.put('/:id', updateJob);
 
 // Delete a job by ID (protected)
-router.delete('/:id', requireAuth, deleteJob);
+router.delete('/:id', deleteJob);
 
 module.exports = router;

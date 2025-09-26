@@ -4,7 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const userRouter = require("./routes/userRouter");
 const jobRouter = require("./routes/jobRouter");
-const { unknownEndpoint,errorHandler } = require("./middleware/customMiddleware");
+const { unknownEndpoint, errorHandler } = require("./middleware/customMiddleware");
 const connectDB = require("./config/db");
 const cors = require("cors");
 
@@ -16,10 +16,9 @@ app.use(morgan("dev"));
 connectDB();
 
 // Use the userRouter for all /users routes
-app.use("/api/users", userRouter);
-
-// Use the jobRouter for all /jobs routes
-app.use("/api/jobs", jobRouter);
+if (process.env.PROTECTED == "true") {
+    app.use("/api/users", userRouter);
+}
 
 // Use the jobRouter for all /jobs routes
 app.use("/api/jobs", jobRouter);
@@ -30,5 +29,5 @@ app.use(errorHandler);
 const port = process.env.PORT || 4000;
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
